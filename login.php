@@ -27,7 +27,7 @@ session_start();
         <div class="input-group">
             <input type="password" id="password" required>
             <label for="password">Password</label>
-            <div class="forgot-password">Forgot password?</div>
+            <div class="forgot-password" onclick="goto('forgot_password')">Forgot password?</div>
         </div>
         <button type="submit" class="login-button">LOGIN</button>
         <div class="signup">

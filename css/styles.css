@@ -150,7 +150,14 @@ body {
 .signup p{
     font-size: 0.75em;
 }
-
+.forgot-password{
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.8em;
+}
+.forgot-password:hover{
+    color:black;
+}
 
 
 /* SIGNUP */
@@ -191,4 +198,76 @@ body {
 }
 .signup-container button{
     margin-top: 15px;
+}
+
+/* Forgot Password */
+.back-to-login {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.back-to-login a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+.password-reset-container {
+    background-color: #ffffff;
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.password-reset-container-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.password-reset-container-form h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.password-reset-container-form p {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.input-group label {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: #fff;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #777;
+}
+
+.password-reset-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(to right, #90abc0, #a8aaaa);
+    color: #fff;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.password-reset-container button:hover {
+    opacity: 0.9;
 }
