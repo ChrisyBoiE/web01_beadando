@@ -64,6 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <div class="signup-container">
+        <div class="back-to-login">
+            <a href="login.php">&#8592; Back to Login</a>
+        </div>
         <form class="signup-form" id="signupForm" method="POST">
             <h2>Sign Up</h2>
 

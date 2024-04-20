@@ -271,3 +271,22 @@ body {
 .password-reset-container button:hover {
     opacity: 0.9;
 }
+.back-to-login {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.back-to-login a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.back-to-login a:hover {
+    background-color: #e7e7e7;
+}
