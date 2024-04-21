@@ -19,12 +19,12 @@ try {
 }
 
 // Az űrlap adatainak kezelése
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
-    $confirm_password = trim($_POST['confirm_password']);
-    $email = trim($_POST['email']);
-    $gender = trim($_POST['gender']);
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    $email = $_POST['email'];
+    $gender = $_POST['gender'];
     $gender_value = ($gender === 'female') ? 0 : 1;
 
 
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Jelszó hashelése
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
     // Az adatok beszúrása az adatbázisba
     try {
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Panel</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
@@ -108,11 +108,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="terms">I accept all terms and conditions</label>
             </div>
 
-            <button type="submit" class="signup-button" disabled>REGISTER</button>
+            <button type="submit" name="register" class="signup-button" disabled>REGISTER</button>
         </form>
     </div>
 
-    <script src="/js/signup.js"></script>
+    <script src="js/signup.js"></script>
 </body>
 
 </html>
