@@ -1,8 +1,5 @@
 <?php
-session_start();
 include 'config.php';
-
-// CREATE TABLE `web01`.`users` (`id` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `password` VARCHAR(50) NOT NULL , `email` VARCHAR(100) NOT NULL , `gender` VARCHAR NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 // Adatbázis kapcsolat létrehozása
 try {
@@ -23,7 +20,32 @@ if (isset($_POST['register'])) {
 
     // Jelszavak egyezésének ellenőrzése
     if ($password !== $confirm_password) {
-        die('A jelszavak nem egyeznek.');
+        $_SESSION['message'] = 'The passwords do not match.';
+        $_SESSION['message_type'] = 'error';
+        header('Location: signup.php');
+        exit();
+    }
+
+    // Ellenőrizzük, hogy az e-mail cím már létezik-e az adatbázisban
+    $stmt = $db->prepare("SELECT email FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $existingEmail = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingEmail) {
+        $_SESSION['message'] = 'This email address is already in use.';
+        $_SESSION['message_type'] = 'error';
+        header('Location: signup.php');
+        exit();
+    }
+
+    $stmt = $db->prepare("SELECT username FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    $existingUsername = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($existingUsername) {
+        $_SESSION['message'] = 'This username is already in use.';
+        $_SESSION['message_type'] = 'error';
+        header('Location: signup.php');
+        exit();
     }
 
     // Jelszó hashelése SHA1 használatával
@@ -34,6 +56,7 @@ if (isset($_POST['register'])) {
         $stmt = $db->prepare("INSERT INTO users (username, password, email, gender) VALUES (?, ?, ?, ?)");
         $stmt->execute([$username, $password_hash, $email, $gender_value]);
         $_SESSION['message'] = 'Successfully registered, you can now login!';
+        $_SESSION['message_type'] = 'success';
         header('Location: login.php');
         exit();
     } catch (PDOException $e) {
@@ -41,6 +64,7 @@ if (isset($_POST['register'])) {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -54,7 +78,9 @@ if (isset($_POST['register'])) {
 </head>
 
 <body>
-
+    <?php
+    displayMessage()
+    ?>
     <div class="back-to-login">
         <a href="login.php">&#8592; Back to Login</a>
     </div>

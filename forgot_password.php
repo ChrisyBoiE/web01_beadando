@@ -1,16 +1,17 @@
 <?php
-session_start();
-require_once('config.php');
+include 'config.php';  // Make sure your config file has correct database credentials
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $new_password = $_POST['new_password'];
 
     if (!$email || !$new_password) {
-        exit("Please fill out all fields.");
+        $_SESSION['message'] = "Please fill out all fields.";
+        header("Location: forgot_password.php");
+        exit();
     }
 
-    $new_pass = sha1($new_password);
+    $new_pass = sha1($new_password);  // Using sha1 for demonstration, though it's not recommended for production
 
     try {
         $db = new PDO($dsn, $db_user, $db_password);
@@ -24,16 +25,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user) {
             // Update the user's password in the database
             $stmt = $db->prepare("UPDATE users SET password = ? WHERE email = ?");
-            $stmt->execute([$new_pass, $email]);
-            $_SESSION['message'] = "Your password has been updated successfully.";
+            $result = $stmt->execute([$new_pass, $email]);
+            if ($result) {
+                $_SESSION['message'] = "Your password has been updated successfully.";
+                $_SESSION['message_type'] = 'success';
+                header("Location: login.php");
+                exit();
+            } else {
+                $_SESSION['message'] = "Failed to update password.";
+                $_SESSION['message_type'] = 'error';
+            }
         } else {
             $_SESSION['message'] = "No account found with that email address.";
+            $_SESSION['message_type'] = 'error';
         }
     } catch (PDOException $e) {
-        exit("Database error: " . $e->getMessage());
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'error';
     }
+    header("Location: forgot_password.php");  // Redirect back to the forgot password page to show message
+    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="hu">
@@ -46,12 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-
-    <?php if (isset($_SESSION['message'])): ?>
-        <div id="message" class="message"><?php echo $_SESSION['message']; ?></div>
-        <?php unset($_SESSION['message']); ?>
-    <?php endif; ?>
-
+    <?php
+    displayMessage();
+    ?>
     <div class="password-reset-container">
         <div class="back-to-login">
             <a href="login.php">&#8592; Back to Login</a>

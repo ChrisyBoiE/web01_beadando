@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once('config.php'); // Include your database configuration
+include 'config.php'; // Include your database configuration
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -11,19 +10,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Prepare a select statement to fetch user data using a parameterized query
-        $stmt = $db->prepare("SELECT id, password FROM users WHERE username = :username LIMIT 1");
+        $stmt = $db->prepare("SELECT id, username, email, password, gender FROM users WHERE username = :username LIMIT 1");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && sha1($password) === $user['password']) {
             $_SESSION['message'] = 'Successfully logged in!';
+            $_SESSION['message_type'] = 'success';
+            $_SESSION['isloggedin'] = true;
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['email'] = $user['email'];
             $_SESSION["user_id"] = $user['id'];
-            header('Location: main.php');
+            $_SESSION["gender"] = $user['gender'];
+            header('Location: index.php');
             exit();
         } else {
             // If the login was unsuccessful
             $_SESSION['message'] = "Invalid username or password.";
+            $_SESSION['message_type'] = 'error';
             header("Location: login.php");
             exit();
         }
@@ -49,10 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-    <?php if (isset($_SESSION['message'])): ?>
-        <div id="message" class="message"><?php echo $_SESSION['message']; ?></div>
-        <?php unset($_SESSION['message']); ?>
-    <?php endif; ?>
+    <?php
+    displayMessage();
+    ?>
 
     <div class="login-container">
         <form class="login-form" method="POST">

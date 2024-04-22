@@ -14,15 +14,22 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background-color: #4CAF50;
     color: white;
     text-align: center;
     padding: 10px;
     font-size: 16px;
     z-index: 1000;
-    display: none;
-    opacity: 0;
+    display: block; /* Módosítottam, hogy mindig látható legyen, ha jelen van */
+    opacity: 1; /* Módosítottam az alapértelmezett átlátszatlanságot */
     transition: opacity 0.5s;
+}
+
+.message.success {
+    background-color: #4CAF50; /* Zöld háttér sikeres üzenetekhez */
+}
+
+.message.error {
+    background-color: #f44336; /* Piros háttér hiba üzenetekhez */
 }
 
 
