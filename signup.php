@@ -1,18 +1,12 @@
 <?php
+session_start();
+include 'config.php';
 
 // CREATE TABLE `web01`.`users` (`id` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(50) NOT NULL , `password` VARCHAR(50) NOT NULL , `email` VARCHAR(100) NOT NULL , `gender` VARCHAR NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-session_start();
-
-$host = 'localhost'; // vagy az adatbázis szervered címe
-$dbname = 'web01';
-$db_user = 'web01';
-$db_pass = 'L5Dve.uU*H4yrNMw';
-
 // Adatbázis kapcsolat létrehozása
 try {
-    $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $db_user, $db_pass);
-    // Beállítjuk, hogy hiba esetén kivételt dobjon a PDO.
+    $db = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_password);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Adatbázis kapcsolati hiba: " . $e->getMessage());
@@ -27,16 +21,13 @@ if (isset($_POST['register'])) {
     $gender = $_POST['gender'];
     $gender_value = ($gender === 'female') ? 0 : 1;
 
-
-    // Itt lehetnek további érvényesítések...
-
     // Jelszavak egyezésének ellenőrzése
     if ($password !== $confirm_password) {
         die('A jelszavak nem egyeznek.');
     }
 
-    // Jelszó hashelése
-    $password_hash = password_hash($password, PASSWORD_BCRYPT);
+    // Jelszó hashelése SHA1 használatával
+    $password_hash = sha1($password);
 
     // Az adatok beszúrása az adatbázisba
     try {
@@ -51,6 +42,7 @@ if (isset($_POST['register'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="hu">
 
@@ -63,10 +55,10 @@ if (isset($_POST['register'])) {
 
 <body>
 
+    <div class="back-to-login">
+        <a href="login.php">&#8592; Back to Login</a>
+    </div>
     <div class="signup-container">
-        <div class="back-to-login">
-            <a href="login.php">&#8592; Back to Login</a>
-        </div>
         <form class="signup-form" id="signupForm" method="POST">
             <h2>Sign Up</h2>
 

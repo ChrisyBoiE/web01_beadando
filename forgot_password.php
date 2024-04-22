@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config.php'; // Include your database configuration file
+require_once('config.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit("Please fill out all fields.");
     }
 
-    $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+    $new_pass = sha1($new_password);
 
     try {
         $db = new PDO($dsn, $db_user, $db_password);
@@ -24,10 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user) {
             // Update the user's password in the database
             $stmt = $db->prepare("UPDATE users SET password = ? WHERE email = ?");
-            $stmt->execute([$hashed_new_password, $email]);
-            echo "Your password has been updated successfully.";
+            $stmt->execute([$new_pass, $email]);
+            $_SESSION['message'] = "Your password has been updated successfully.";
         } else {
-            echo "No account found with that email address.";
+            $_SESSION['message'] = "No account found with that email address.";
         }
     } catch (PDOException $e) {
         exit("Database error: " . $e->getMessage());
@@ -46,6 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+
+    <?php if (isset($_SESSION['message'])): ?>
+        <div id="message" class="message"><?php echo $_SESSION['message']; ?></div>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
 
     <div class="password-reset-container">
         <div class="back-to-login">
