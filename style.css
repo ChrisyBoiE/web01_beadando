@@ -37,6 +37,7 @@ section#recently-played {
     margin: 20px;
     /* Szekciók formázásai */
 }
+
 /* További stílusok, amelyek meghatározzák a színeket, margókat, paddingokat, betűtípusokat, stb. */
 #sidebar {
     width: 250px;
@@ -93,8 +94,8 @@ section#recently-played {
     margin-bottom: 10px;
 }
 
-.active{
-    color:#fbfd82 !important;
+.active {
+    color: #fbfd82 !important;
     background-color: rgba(0, 0, 0, 0.6);
     width: 70%;
     padding: 10px 15px;
@@ -122,7 +123,7 @@ section#recently-played {
 .search-container {
     display: flex;
     flex-grow: 1;
-    width: 300px !important; 
+    width: 300px !important;
 }
 
 #search-box {
@@ -167,7 +168,7 @@ section#recently-played {
 
 .username {
     margin: 0 auto;
-    font-size: 1em;   
+    font-size: 1em;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
@@ -267,7 +268,7 @@ section#recently-played {
     width: 1200px;
     height: 400px;
     border-radius: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 12px 15px rgba(68,68,68,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 12px 15px rgba(68, 68, 68, 0.1);
 }
 
 .section-title {
@@ -398,3 +399,195 @@ section#recently-played {
 }
 
 /* Reszponzív design és további stílusok */
+
+
+.music-player-controls {
+    display: flex;
+    align-items: center;
+    background-color: #ccc;
+    padding: 10px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 12px 15px rgba(68, 68, 68, 0.1);
+    width: auto;
+    max-width: 800px;
+    /* or 100% based on your layout */
+    margin: auto;
+}
+
+/* Stílusok a zenelejátszó vezérlőihez */
+.music-player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(35, 35, 35, 0.70);
+    padding: 20px;
+    border-radius: 25px;
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.current-track {
+    display: flex;
+    align-items: center;
+}
+
+.track-artwork img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.track-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.track-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.track-artist {
+    font-size: 14px;
+}
+
+.playback-controls button {
+    background: none;
+    border: none;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.playback-controls button:focus {
+    outline: none;
+}
+
+.play-pause {
+    font-size: 24px;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.progress-bar {
+    background-color: #d3d3d3;
+    height: 5px;
+    flex-grow: 1;
+    position: relative;
+    border-radius: 5px;
+}
+
+.progress {
+    background-color: #fbfd82;
+    width: 0%;
+    /* JavaScript will update this value */
+    height: 100%;
+    border-radius: 5px;
+    position: absolute;
+}
+
+.current-time,
+.total-time {
+    margin: 0 10px;
+}
+
+.volume-controls {
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider {
+    width: 100px;
+    margin-left: 10px;
+}
+
+.control-button {
+    background: none;
+    border: none;
+    font-size: 24px; /* vagy a kívánt méret */
+    color: #fff; /* vagy az általad választott szín */
+    cursor: pointer;
+    padding: 10px; /* térköz a szomszédos gombok között */
+}
+
+.control-button:hover {
+    color: #aaa; /* hover effekt szín */
+}
+
+.volume-slider {
+    -webkit-appearance: none; /* Eltávolítja az alapértelmezett stílust a csúszkáról Safari és Chrome esetén */
+    appearance: none;
+    width: 100%; /* Szélesség beállítása */
+    height: 8px; /* Magasság beállítása */
+    background: #ddd; /* Háttérszín */
+    outline: none; /* Eltávolítja az outline-t, amikor fókuszban van */
+    opacity: 0.7; /* Átlátszatlanság beállítása */
+    transition: opacity .2s;
+}
+
+.volume-slider:hover {
+    opacity: 1; /* Átlátszatlanság beállítása, amikor a felhasználó fölé viszi az egeret */
+}
+
+/* Testreszabja a csúszka "hüvelyét" */
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Eltávolítja az alapértelmezett stílust */
+    appearance: none;
+    width: 15px; /* Szélesség beállítása */
+    height: 15px; /* Magasság beállítása */
+    background: #fbfd82; /* Háttérszín */
+    cursor: pointer; /* Kurzor ikon megváltoztatása, amikor fölé viszik az egeret */
+    border-radius: 50%; /* Kerekítés */
+}
+
+/* Testreszabja a csúszka "hüvelyét" Mozilla Firefox esetén */
+.volume-slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #fbfd82;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+/* TESZT DIV */
+.teszt form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.teszt label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.teszt button {
+    background-color: #5c67f2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.teszt button:hover {
+    background-color: #5058cc;
+}

@@ -1,6 +1,6 @@
 <?php
+include_once 'config.php';
 include ('favicon.php');
-include 'config.php';
 
 $is_logged_in = isset($_SESSION['isloggedin']) && $_SESSION['isloggedin'] === true;
 
@@ -12,6 +12,57 @@ if ($is_logged_in) {
     $username = 'Vendég';
     $avatar_image = 'default.png'; // Egy alapértelmezett kép, ha nincs bejelentkezve a felhasználó
 }
+
+if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
+    // Validate file size and type if needed, here we assume they are correct
+
+    $title = $_POST['title'];
+    $artist = $_POST['artist'];
+    $album = $_POST['album'] ?? ''; // Using the null coalescing operator to handle optional fields
+    $genre = $_POST['genre'];
+    $userId = $_SESSION['id'] ?? null; // Safeguarding against undefined index
+
+    if ($userId === null) {
+        die('User ID is not set. Please log in again.');
+    }
+
+    // Process the music file
+    $musicFilePath = 'uploads/music/' . basename($_FILES['musicFile']['name']);
+    if (move_uploaded_file($_FILES['musicFile']['tmp_name'], $musicFilePath)) {
+        echo "Music file uploaded successfully.";
+    } else {
+        die("Failed to upload music file.");
+    }
+
+    // Process the optional photo file
+    $photoFilePath = "";
+    if (!empty($_FILES['musicPhoto']['name'])) {
+        if ($_FILES['musicPhoto']['error'] == UPLOAD_ERR_OK) {
+            $photoFilePath = 'uploads/imgs/' . basename($_FILES['musicPhoto']['name']);
+            if (!move_uploaded_file($_FILES['musicPhoto']['tmp_name'], $photoFilePath)) {
+                die("Failed to upload photo.");
+            }
+        } else {
+            die("Error uploading photo.");
+        }
+    }
+
+    // Inserting data into the database
+    try {
+        include 'config.php'; // Ensure database connection is available
+        $query = "INSERT INTO Songs (user_id, title, artist, album, genre, file_path, upload_date, music_photo) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$userId, $title, $artist, $album, $genre, $musicFilePath, $photoFilePath]);
+        echo "Song data successfully uploaded!";
+    } catch (PDOException $e) {
+        die("Database error: " . $e->getMessage());
+    }
+} else {
+    if (isset($_POST['submit'])) {
+        // This means there was an error with the file upload
+        echo "Error with file upload: " . $_FILES['musicFile']['error'];
+    }
+}
 ?>
 
 
@@ -22,6 +73,7 @@ if ($is_logged_in) {
     <meta charset="UTF-8">
     <title>BEATBOUTIQUE</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 
 <body>
@@ -57,10 +109,10 @@ if ($is_logged_in) {
 
         <main id="content">
             <header id="top-bar">
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="search" placeholder="Keresés..." id="search-box">
                     <button type="submit" id="search-btn">Keresés</button>
-                </div>
+                </div> -->
                 <div class="user-controls">
                     <div class="user-profile">
                         <?php if ($is_logged_in): ?>
@@ -74,22 +126,6 @@ if ($is_logged_in) {
 
             <section id="playlist">
                 <h2 class="section-title">CURATED PLAYLIST</h2>
-                <div class="playlist-items">
-                    <div class="playlist-item">
-                        <div class="album-cover">
-                            <img src="album-cover1.jpg" alt="Album borító">
-                        </div>
-                        <div class="song-info">
-                            <h3 class="song-title">Dal címe 1</h3>
-                            <p class="artist-name">Előadó neve 1</p>
-                        </div>
-                        <div class="play-time">
-                            <span class="duration">3:30</span>
-                        </div>
-                        <button class="play-button">Lejátszás</button>
-                    </div>
-                    <!-- További playlist item-ek hasonló szerkezettel -->
-                </div>
             </section>
 
             <section id="popular-artists">
@@ -140,11 +176,72 @@ if ($is_logged_in) {
                 </div>
             </section>
 
+
+            <div class="music-player-controls">
+                <div class="current-track">
+                    <div class="track-artwork">
+                        <img src="https://s.24.hu/app/uploads/2024/04/central-0762013799-1024x576.jpg"
+                            alt="Track Artwork">
+                    </div>
+                    <div class="track-info">
+                        <span class="track-title">Azahriah</span>
+                        <span class="track-artist">Cipoe</span>
+                    </div>
+                </div>
+                <div class="playback-controls">
+                    <button class="control-button" onclick="prevTrack()"><i class="fas fa-step-backward"></i></button>
+                    <button class="control-button play-pause" onclick="togglePlayPause()"><i
+                            class="fas fa-play"></i></button>
+                    <button class="control-button" onclick="nextTrack()"><i class="fas fa-step-forward"></i></button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="current-time">0:00</span>
+                    <span class="total-time">3:12</span>
+                </div>
+                <div class="volume-controls">
+                    <button class="control-button" onclick="toggleMute()">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <input type="range" class="volume-slider" min="0" max="100" value="50"
+                        oninput="setVolume(this.value)">
+                </div>
+            </div>
+
+            <div class="teszt">
+                <h2>Zene Feltöltése</h2>
+                <form action="index.php" method="post" enctype="multipart/form-data">
+                    <label for="title">Cím:</label>
+                    <input type="text" id="title" name="title" required><br><br>
+
+                    <label for="artist">Előadó:</label>
+                    <input type="text" id="artist" name="artist" required><br><br>
+
+                    <label for="album">Album:</label>
+                    <input type="text" id="album" name="album"><br><br>
+
+                    <label for="genre">Műfaj:</label>
+                    <input type="text" id="genre" name="genre"><br><br>
+
+                    <label for="musicFile">Zenefájl:</label>
+                    <input type="file" id="musicFile" name="musicFile" required><br><br>
+
+                    <label for="musicPhoto">Borítókép:</label>
+                    <input type="file" id="musicPhoto" name="musicPhoto"><br><br>
+
+                    <button type="submit" name="submit">Feltöltés</button>
+                </form>
+            </div>
+
         </main>
 
     </div>
 
-    <script src="script.js"></script>
+
+
+    <script src="js/script.js"></script>
 </body>
 
 </html>
