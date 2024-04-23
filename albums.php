@@ -41,53 +41,45 @@ try {
     <div id="music-player">
 
         <aside id="sidebar">
-            <div class="logo">
-                <img src="logo.png" alt="Zenei Portál Logó">
+            <div class="user-profile">
+                <?php if ($is_logged_in): ?>
+                    <img src="img/<?php echo $avatar_image; ?>" alt="Profilkép" class="profile-pic">
+                    <span class="username"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
+                <?php else: ?>
+                    <div class="logo">
+                        <img src="img/logo.png">
+                    </div>
+                <?php endif; ?>
             </div>
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="albums.php" class="active">Songs</a></li>
+                    <?php if ($is_logged_in): ?>
+                        <li><a href="contactus.php">Upload</a></li>
+                    <?php endif; ?>
                     <li><a href="aboutus.php">About us</a></li>
-                    <li><a href="contactus.php">Contact us</a></li>
                     <li><?php if ($is_logged_in): ?>
-                            <a href="logout.php" class="navbar-item">Sign Out</a>
+                            <a href="login_register/logout.php">Sign Out</a>
                         <?php else: ?>
-                            <a href="login.php" class="navbar-item">Sign In</a>
+                            <a href="login_register/login.php">Sign In</a>
                         <?php endif; ?>
                     </li>
                 </ul>
             </nav>
-            <div class="sidebar-section">
-                <h2>Saját Zene</h2>
-                <ul>
-                    <li><a href="#recently-played">Recently Played</a></li>
-                    <li><a href="#favorite-songs">Favorite Songs</a></li>
-                    <li><a href="#local-file">Locale Files</a></li>
-                </ul>
-            </div>
+            <?php if ($is_logged_in): ?>
+                <div class="sidebar-section">
+                    <h2>My music</h2>
+                    <ul>
+                        <li><a href="local-file.php">Locale Files</a></li>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </aside>
 
 
 
         <main id="content">
-            <header id="top-bar">
-                <!-- <div class="search-container">
-                    <input type="search" placeholder="Keresés..." id="search-box">
-                    <button type="submit" id="search-btn">Keresés</button>
-                </div> -->
-                <div class="user-controls">
-                    <div class="user-profile">
-                        <?php if ($is_logged_in): ?>
-                            <img src="img/<?php echo $avatar_image; ?>" alt="Profilkép" class="profile-pic">
-                            <span class="username"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
-                        <?php else: ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </header>
-
-
             <header id="top-bar2">
                 <div id="song-list">
                     <?php foreach ($songs as $song): ?>
@@ -106,8 +98,8 @@ try {
                                     <div class="more-options">
                                         <i class="fas fa-ellipsis-v"></i>
                                         <div class="dropdown-menu">
-                                            <a href="edit.php?id=<?php echo $song['id']; ?>">Edit</a>
-                                            <a href="delete.php?id=<?php echo $song['id']; ?>">Delete</a>
+                                            <a href="secondary/edit2.php?id=<?php echo $song['song_id']; ?>">Edit</a>
+                                            <a href="secondary/delete.php?id=<?php echo $song['song_id']; ?>">Delete</a>
                                         </div>
                                     </div>
                                 <?php endif; ?>

@@ -104,7 +104,7 @@ section#recently-played {
 
 #content {
     background-color: #f5f5f5;
-    padding: 20px;
+    padding: 0px auto;
     flex-grow: 1;
     border-radius: 10px;
     /* A többi tartalom kitölti a fennmaradó helyet */
@@ -157,6 +157,14 @@ section#recently-played {
     align-items: center;
 }
 
+.user-profile{
+    display: flex;
+    justify-content: start;
+    align-content: center;
+    /* vertical-align: middle; */
+    flex-direction: row;
+}
+
 .profile-pic {
     display: flex;
     justify-content: center;
@@ -168,10 +176,10 @@ section#recently-played {
 
 .username {
     margin: 0 auto;
-    font-size: 1em;
+    font-size: 1.5em;
     font-weight: bold;
-    text-align: center;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
 }
 
 /* Reszponzív designhoz szükséges médialekérdezések és további stílusok */
@@ -262,13 +270,50 @@ section#recently-played {
 /* A lejátszás vezérlőinek ikonjait vagy SVG-ként vagy ikonkönyvtárból lehet behúzni. */
 
 #playlist {
-    background-image: url(https://cosmopolitan.hu/uploads/cover/azahriah-siker-cosmohu-926cb5f916.jpg);
-    background-size: cover;
-    background-attachment: fixed;
-    width: 1200px;
+    padding-left: 20px;
+    width: 96%;
     height: 400px;
     border-radius: 25px;
+    display: flex;
+    position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 12px 15px rgba(68, 68, 68, 0.1);
+}
+#playlist img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    filter: blur(2px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 25px;
+}
+
+#playlist h2{
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    font-weight: bold;
+    color: white !important;
+}
+#playlist h3{
+    position: absolute;
+    top:130px;
+    left:50px;
+    color: white !important;
+}
+#playlist p{
+    position: absolute;
+    top: 180px;
+    left: 50px;
+    color: white;
+    text-align: justify;
+    padding: 30px 50px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    max-width: 450px;
+    height: 50px;
+    font-weight: 400;
 }
 
 .section-title {
@@ -276,7 +321,16 @@ section#recently-played {
     font-weight: bold;
     padding: 30px 50px;
     margin-bottom: 20px;
-    color: white;
+    font-weight: bold;
+    color: black !important;
+}
+.section-title h2{
+    font-size: 25em;
+    font-weight: bold;
+    padding: 0px 0px !important;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: black !important;
 }
 
 .playlist-items {
@@ -344,20 +398,15 @@ section#recently-played {
 }
 
 /* Reszponzív designhoz szükséges médialekérdezések és további stílusok */
-#popular-artists {
-
-    padding: 20px;
-}
-
 .section-title {
     font-size: 1.6em;
     margin-bottom: 20px;
 }
 
 .artists-grid {
-    display: grid;
+    display: flex;
+    justify-content: space-around;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 5em;
 }
 
 .artist-card {
