@@ -1,6 +1,6 @@
 <?php
-include_once 'config.php';
-include ('favicon.php');
+include 'secondary/config.php';
+include ('secondary/favicon.php');
 
 $is_logged_in = isset($_SESSION['isloggedin']) && $_SESSION['isloggedin'] === true;
 
@@ -29,7 +29,6 @@ if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
     // Process the music file
     $musicFilePath = 'uploads/music/' . basename($_FILES['musicFile']['name']);
     if (move_uploaded_file($_FILES['musicFile']['tmp_name'], $musicFilePath)) {
-        echo "Music file uploaded successfully.";
     } else {
         die("Failed to upload music file.");
     }
@@ -53,7 +52,6 @@ if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
         $query = "INSERT INTO Songs (user_id, title, artist, album, genre, file_path, upload_date, music_photo) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
         $stmt = $db->prepare($query);
         $stmt->execute([$userId, $title, $artist, $album, $genre, $musicFilePath, $photoFilePath]);
-        echo "Song data successfully uploaded!";
     } catch (PDOException $e) {
         die("Database error: " . $e->getMessage());
     }
@@ -72,7 +70,7 @@ if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
 <head>
     <meta charset="UTF-8">
     <title>BEATBOUTIQUE</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 
@@ -90,9 +88,9 @@ if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
                     <li><a href="aboutus.php">About us</a></li>
                     <li><a href="contactus.php">Contact us</a></li>
                     <li><?php if ($is_logged_in): ?>
-                            <a href="logout.php" class="navbar-item">Sign Out</a>
+                            <a href="login_register/logout.php" class="navbar-item">Sign Out</a>
                         <?php else: ?>
-                            <a href="login.php" class="navbar-item">Sign In</a>
+                            <a href="login_register/login.php" class="navbar-item">Sign In</a>
                         <?php endif; ?>
                     </li>
                 </ul>

@@ -64,3 +64,4 @@ function toggleMute() {
 
 // A lejátszó inicializálása amint a dokumentum betöltődik
 document.addEventListener('DOMContentLoaded', initializePlayer);
+

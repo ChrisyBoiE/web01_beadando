@@ -1,6 +1,17 @@
 <?php
-include ('favicon.php');
-include 'config.php';
+include 'secondary/config.php';
+include ('secondary/favicon.php');
+
+$is_logged_in = isset($_SESSION['isloggedin']) && $_SESSION['isloggedin'] === true;
+
+if ($is_logged_in) {
+    $username = $_SESSION['username'];
+    $gender = $_SESSION['gender'];
+    $avatar_image = ($gender == 1) ? 'men.png' : 'women.png';
+} else {
+    $username = 'Vendég';
+    $avatar_image = 'default.png'; // Egy alapértelmezett kép, ha nincs bejelentkezve a felhasználó
+}
 ?>
 
 
@@ -10,7 +21,8 @@ include 'config.php';
 <head>
     <meta charset="UTF-8">
     <title>BEATBOUTIQUE</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 
 <body>
@@ -27,9 +39,9 @@ include 'config.php';
                     <li><a href="aboutus.php">About us</a></li>
                     <li><a href="contactus.php" class="active">Contact us</a></li>
                     <li><?php if ($is_logged_in): ?>
-                            <a href="logout.php" class="navbar-item">Sign Out</a>
+                            <a href="login_register/logout.php" class="navbar-item">Sign Out</a>
                         <?php else: ?>
-                            <a href="login.php" class="navbar-item">Sign In</a>
+                            <a href="login_register/login.php" class="navbar-item">Sign In</a>
                         <?php endif; ?>
                     </li>
                 </ul>
@@ -46,42 +58,23 @@ include 'config.php';
 
         <main id="content">
             <header id="top-bar">
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="search" placeholder="Keresés..." id="search-box">
                     <button type="submit" id="search-btn">Keresés</button>
-                </div>
+                </div> -->
                 <div class="user-controls">
-                    <div class="notifications">
-                        <img src="notification-icon.png" alt="Értesítések">
-                    </div>
                     <div class="user-profile">
-                        <img src="user-avatar.png" alt="Profilkép" class="profile-pic">
-                        <span class="username">Felhasználónév</span>
-                        <div class="profile-dropdown">
-                            <!-- Profilkezelési lehetőségek lenyíló menü -->
-                        </div>
+                        <?php if ($is_logged_in): ?>
+                            <img src="img/<?php echo $avatar_image; ?>" alt="Profilkép" class="profile-pic">
+                            <span class="username"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
+                        <?php else: ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
 
             <section id="playlist">
-                <h2 class="section-title">Kurátált lejátszási lista</h2>
-                <div class="playlist-items">
-                    <div class="playlist-item">
-                        <div class="album-cover">
-                            <img src="album-cover1.jpg" alt="Album borító">
-                        </div>
-                        <div class="song-info">
-                            <h3 class="song-title">Dal címe 1</h3>
-                            <p class="artist-name">Előadó neve 1</p>
-                        </div>
-                        <div class="play-time">
-                            <span class="duration">3:30</span>
-                        </div>
-                        <button class="play-button">Lejátszás</button>
-                    </div>
-                    <!-- További playlist item-ek hasonló szerkezettel -->
-                </div>
+                <h2 class="section-title">CURATED PLAYLIST</h2>
             </section>
 
             <section id="popular-artists">
@@ -115,16 +108,89 @@ include 'config.php';
                             <h3 class="artist-name">Azahriah</h3>
                         </div>
                     </div>
+                    <div class="artist-card">
+                        <img src="https://story.hu/uploads/2023/10/Azahriah.png" alt="The Creator" class="artist-photo">
+                        <div class="artist-box">
+                            <h3 class="artist-name">Azahriah</h3>
+                        </div>
+                    </div>
+                    <div class="artist-card">
+                        <img src="https://story.hu/uploads/2023/10/Azahriah.png" alt="The Creator" class="artist-photo">
+                        <div class="artist-box">
+                            <h3 class="artist-name">Azahriah</h3>
+                        </div>
+                    </div>
                     <!-- További előadó kártyák -->
                     <!-- ... -->
                 </div>
             </section>
 
+
+            <div class="music-player-controls">
+                <div class="current-track">
+                    <div class="track-artwork">
+                        <img src="https://s.24.hu/app/uploads/2024/04/central-0762013799-1024x576.jpg"
+                            alt="Track Artwork">
+                    </div>
+                    <div class="track-info">
+                        <span class="track-title">Azahriah</span>
+                        <span class="track-artist">Cipoe</span>
+                    </div>
+                </div>
+                <div class="playback-controls">
+                    <button class="control-button" onclick="prevTrack()"><i class="fas fa-step-backward"></i></button>
+                    <button class="control-button play-pause" onclick="togglePlayPause()"><i
+                            class="fas fa-play"></i></button>
+                    <button class="control-button" onclick="nextTrack()"><i class="fas fa-step-forward"></i></button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="current-time">0:00</span>
+                    <span class="total-time">3:12</span>
+                </div>
+                <div class="volume-controls">
+                    <button class="control-button" onclick="toggleMute()">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <input type="range" class="volume-slider" min="0" max="100" value="50"
+                        oninput="setVolume(this.value)">
+                </div>
+            </div>
+
+            <div class="teszt">
+                <h2>Zene Feltöltése</h2>
+                <form action="index.php" method="post" enctype="multipart/form-data">
+                    <label for="title">Cím:</label>
+                    <input type="text" id="title" name="title" required><br><br>
+
+                    <label for="artist">Előadó:</label>
+                    <input type="text" id="artist" name="artist" required><br><br>
+
+                    <label for="album">Album:</label>
+                    <input type="text" id="album" name="album"><br><br>
+
+                    <label for="genre">Műfaj:</label>
+                    <input type="text" id="genre" name="genre"><br><br>
+
+                    <label for="musicFile">Zenefájl:</label>
+                    <input type="file" id="musicFile" name="musicFile" required><br><br>
+
+                    <label for="musicPhoto">Borítókép:</label>
+                    <input type="file" id="musicPhoto" name="musicPhoto"><br><br>
+
+                    <button type="submit" name="submit">Feltöltés</button>
+                </form>
+            </div>
+
         </main>
 
     </div>
 
-    <script src="script.js"></script>
+
+
+    <script src="js/script.js"></script>
 </body>
 
 </html>

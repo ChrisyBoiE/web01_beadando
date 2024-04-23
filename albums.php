@@ -1,8 +1,30 @@
 <?php
-include ('favicon.php');
-include 'config.php';
-?>
+// Include your config file and ensure session is started
+include 'secondary/config.php';
+include ('secondary/favicon.php');
 
+$is_logged_in = isset($_SESSION['isloggedin']) && $_SESSION['isloggedin'] === true;
+
+if ($is_logged_in) {
+    $username = $_SESSION['username'];
+    $gender = $_SESSION['gender'];
+    $avatar_image = ($gender == 1) ? 'men.png' : 'women.png';
+} else {
+    $username = 'Vendég';
+    $avatar_image = 'default.png'; // Egy alapértelmezett kép, ha nincs bejelentkezve a felhasználó
+}
+
+// Ebben a változóban tároljuk, hogy az aktuális felhasználó admin-e
+$is_admin = isset($_SESSION['roles']) && $_SESSION['roles'] == 'admin';
+
+// Lekérdezzük az adatokat az adatbázisból
+try {
+    $stmt = $db->query("SELECT * FROM Songs");
+    $songs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
+?>
 
 <!DOCTYPE html>
 <html lang="hu">
@@ -10,7 +32,9 @@ include 'config.php';
 <head>
     <meta charset="UTF-8">
     <title>BEATBOUTIQUE</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 
 <body>
@@ -44,87 +68,57 @@ include 'config.php';
             </div>
         </aside>
 
+
+
         <main id="content">
             <header id="top-bar">
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="search" placeholder="Keresés..." id="search-box">
                     <button type="submit" id="search-btn">Keresés</button>
-                </div>
+                </div> -->
                 <div class="user-controls">
-                    <div class="notifications">
-                        <img src="notification-icon.png" alt="Értesítések">
-                    </div>
                     <div class="user-profile">
-                        <img src="user-avatar.png" alt="Profilkép" class="profile-pic">
-                        <span class="username">Felhasználónév</span>
-                        <div class="profile-dropdown">
-                            <!-- Profilkezelési lehetőségek lenyíló menü -->
-                        </div>
+                        <?php if ($is_logged_in): ?>
+                            <img src="img/<?php echo $avatar_image; ?>" alt="Profilkép" class="profile-pic">
+                            <span class="username"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
+                        <?php else: ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
 
-            <section id="playlist">
-                <h2 class="section-title">Kurátált lejátszási lista</h2>
-                <div class="playlist-items">
-                    <div class="playlist-item">
-                        <div class="album-cover">
-                            <img src="album-cover1.jpg" alt="Album borító">
-                        </div>
-                        <div class="song-info">
-                            <h3 class="song-title">Dal címe 1</h3>
-                            <p class="artist-name">Előadó neve 1</p>
-                        </div>
-                        <div class="play-time">
-                            <span class="duration">3:30</span>
-                        </div>
-                        <button class="play-button">Lejátszás</button>
-                    </div>
-                    <!-- További playlist item-ek hasonló szerkezettel -->
-                </div>
-            </section>
 
-            <section id="popular-artists">
-                <h2 class="section-title">Popular Artist</h2>
-                <div class="artists-grid">
-                    <!-- Egy előadó kártyája -->
-                    <div class="artist-card">
-                        <img src="https://ew.com/thmb/4pgQGiJuJkiOs-rH_C-T62P8jGg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/The-Weeknd-c1ee39aa91df4baf91560c1b07e71ad8.jpg"
-                            alt="The Creator" class="artist-photo">
-                        <div class="artist-box">
-                            <h3 class="artist-name">The Creator</h3>
+            <header id="top-bar2">
+                <div id="song-list">
+                    <?php foreach ($songs as $song): ?>
+                        <div class="song">
+                            <img src="<?php echo $song['music_photo'] ?>" alt="Album Image">
+                            <div class="song-info">
+                                <h4><?php echo htmlspecialchars($song['title']); ?></h4>
+                                <p><?php echo htmlspecialchars($song['artist']); ?></p>
+                                <span class="genre"><?php echo htmlspecialchars($song['genre']); ?></span>
+                            </div>
+                            <div class="song-actions">
+                                <a href="<?php echo $song['file_path'] ?>" download>
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <?php if ($is_admin): ?>
+                                    <div class="more-options">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                        <div class="dropdown-menu">
+                                            <a href="edit.php?id=<?php echo $song['id']; ?>">Edit</a>
+                                            <a href="delete.php?id=<?php echo $song['id']; ?>">Delete</a>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
-                    <div class="artist-card">
-                        <img src="https://m.media-amazon.com/images/M/MV5BMzcyOTM2NDA5OF5BMl5BanBnXkFtZTgwMTYzMTQzNzM@._V1_.jpg"
-                            alt="The Creator" class="artist-photo">
-                        <div class="artist-box">
-                            <h3 class="artist-name">21 Savage</h3>
-                        </div>
-                    </div>
-                    <div class="artist-card">
-                        <img src="https://cdn.ripost.hu/2023/01/dzwJOrl5S7XmTH7B5Cr95T7ixKtVMNGIVjWymtvDpGc/fit/1108/622/no/1/aHR0cHM6Ly9jbXNjZG4uYXBwLmNvbnRlbnQucHJpdmF0ZS9jb250ZW50L2VmNjBjODRhODY0MDRlMTBhMjA2YjQ5MmNmMGZhMjEz.jpg"
-                            alt="The Creator" class="artist-photo">
-                        <div class="artist-box">
-                            <h3 class="artist-name">Zámbó Jimmy</h3>
-                        </div>
-                    </div>
-                    <div class="artist-card">
-                        <img src="https://story.hu/uploads/2023/10/Azahriah.png" alt="The Creator" class="artist-photo">
-                        <div class="artist-box">
-                            <h3 class="artist-name">Azahriah</h3>
-                        </div>
-                    </div>
-                    <!-- További előadó kártyák -->
-                    <!-- ... -->
+                    <?php endforeach; ?>
                 </div>
-            </section>
-
+            </header>
         </main>
-
     </div>
-
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
