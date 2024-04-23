@@ -1,14 +1,6 @@
-// Először hozzuk létre az Audio objektumot
-var audio = new Audio('music/azi.mp3');
-var playPauseButton = document.querySelector('.play-pause');
-var progressBar = document.querySelector('.progress');
-var currentTimeDisplay = document.querySelector('.current-time');
-var totalTimeDisplay = document.querySelector('.total-time');
-
-// A gomb állapotának frissítése és a zene lejátszása/szüneteltetése
 function togglePlayPause() {
     var playPauseIcon = document.querySelector('.play-pause i');
-    if (audio.paused) {
+    if (audio.paused || audio.ended) {
         audio.play().then(() => {
             playPauseIcon.classList.remove('fa-play');
             playPauseIcon.classList.add('fa-pause');
@@ -22,22 +14,26 @@ function togglePlayPause() {
         playPauseIcon.classList.add('fa-play');
     }
 }
-// A zenelejátszó inicializálása és az eseménykezelők hozzáadása
+
+document.addEventListener('DOMContentLoaded', function () {
+    initializePlayer();
+    var playPauseButton = document.querySelector('.play-pause');
+    playPauseButton.addEventListener('click', togglePlayPause);
+});
+
 function initializePlayer() {
-    // Az összidő beállítása
+    // A zene állapotának és időjelzések frissítése
     audio.addEventListener('loadedmetadata', function () {
-        totalTimeDisplay.textContent = formatTime(audio.duration);
+        document.querySelector('.total-time').textContent = formatTime(audio.duration);
     });
 
-    // Az aktuális idő frissítése
     audio.addEventListener('timeupdate', function () {
-        currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        document.querySelector('.current-time').textContent = formatTime(audio.currentTime);
         var progressPercentage = (audio.currentTime / audio.duration) * 100;
-        progressBar.style.width = progressPercentage + '%';
+        document.querySelector('.progress').style.width = progressPercentage + '%';
     });
 }
 
-// Idő formátumát átalakító funkció
 function formatTime(seconds) {
     var minutes = Math.floor(seconds / 60);
     var seconds = Math.floor(seconds % 60);
@@ -62,6 +58,66 @@ function toggleMute() {
     }
 }
 
-// A lejátszó inicializálása amint a dokumentum betöltődik
-document.addEventListener('DOMContentLoaded', initializePlayer);
+function playAudio(button) {
+    var file = button.getAttribute('data-file');
+    var title = button.getAttribute('data-title');
+    var artist = button.getAttribute('data-artist');
+    var image = button.getAttribute('data-image');
 
+    // Frissítsd az UI elemeket
+    document.querySelector('.track-artwork img').src = image;
+    document.querySelector('.track-title').textContent = title;
+    document.querySelector('.track-artist').textContent = artist;
+
+    // Zene beállítása és lejátszása
+    audio.src = file;
+    audio.play().then(() => {
+        document.querySelector('.play-pause i').classList.remove('fa-play');
+        document.querySelector('.play-pause i').classList.add('fa-pause');
+    }).catch(e => {
+        console.error("Playback failed", e);
+        alert("Playback failed. Please click the play button to start the audio.");
+    });
+
+    // A lejátszás és az idő frissítése
+    audio.addEventListener('loadedmetadata', function () {
+        document.querySelector('.total-time').textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', function () {
+        document.querySelector('.current-time').textContent = formatTime(audio.currentTime);
+        var progressPercentage = (audio.currentTime / audio.duration) * 100;
+        document.querySelector('.progress').style.width = progressPercentage + '%';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Ellenőrzés, hogy van-e már létrehozva audio objektum
+    if (!window.audio) {
+        window.audio = new Audio();
+        // További inicializálások...
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    var mobileMenuButton = document.getElementById('mobile-menu');
+    var sidebar = document.getElementById('sidebar');
+
+    mobileMenuButton.addEventListener('click', function () {
+        sidebar.classList.toggle('active');
+    });
+});

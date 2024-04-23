@@ -12,6 +12,57 @@ if ($is_logged_in) {
     $username = 'Vendég';
     $avatar_image = 'default.png'; // Egy alapértelmezett kép, ha nincs bejelentkezve a felhasználó
 }
+
+if (isset($_POST['submit']) && $_FILES['musicFile']['error'] == UPLOAD_ERR_OK) {
+    // Validate file size and type if needed, here we assume they are correct
+    $title = $_POST['title'];
+    $artist = $_POST['artist'];
+    $album = $_POST['album'] ?? ''; // Using the null coalescing operator to handle optional fields
+    $genre = $_POST['genre'];
+    $userId = $_SESSION['id'] ?? null; // Safeguarding against undefined index
+
+    if ($userId === null) {
+        echo 'User ID is not set. Please log in again.';
+        die('User ID is not set. Please log in again.');
+    }
+
+    // Process the music file
+    $musicFilePath = 'uploads/music/' . basename($_FILES['musicFile']['name']);
+    if (move_uploaded_file($_FILES['musicFile']['tmp_name'], $musicFilePath)) {
+    } else {
+        echo 'Failed to upload music file.';
+        die("Failed to upload music file.");
+    }
+
+    // Process the optional photo file
+    $photoFilePath = "";
+    if (!empty($_FILES['musicPhoto']['name'])) {
+        if ($_FILES['musicPhoto']['error'] == UPLOAD_ERR_OK) {
+            $photoFilePath = 'uploads/imgs/' . basename($_FILES['musicPhoto']['name']);
+            if (!move_uploaded_file($_FILES['musicPhoto']['tmp_name'], $photoFilePath)) {
+                echo 'Failed to upload photo';
+                die("Failed to upload photo.");
+            }
+        } else {
+            echo 'Error uploading photo.';
+            die("Error uploading photo.");
+        }
+    }
+
+    // Inserting data into the database
+    try { // Ensure database connection is available
+        $query = "INSERT INTO Songs (user_id, title, artist, album, genre, file_path, upload_date, music_photo) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$userId, $title, $artist, $album, $genre, $musicFilePath, $photoFilePath]);
+    } catch (PDOException $e) {
+        die("Database error: " . $e->getMessage());
+    }
+} else {
+    if (isset($_POST['submit'])) {
+        // This means there was an error with the file upload
+        echo "Error with file upload: " . $_FILES['musicFile']['error'];
+    }
+}
 ?>
 
 
@@ -63,29 +114,29 @@ if ($is_logged_in) {
                 </div>
             <?php endif; ?>
         </aside>
-        <main id="content">
+        <main id="content" style="padding: 15px 15px">
             <div class="teszt">
-                <h2>Zene Feltöltése</h2>
-                <form action="index.php" method="post" enctype="multipart/form-data">
-                    <label for="title">Cím:</label>
+                <h2>Uploading music</h2>
+                <form action="contactus.php" method="post" enctype="multipart/form-data">
+                    <label for="title">Title:</label>
                     <input type="text" id="title" name="title" required><br><br>
 
-                    <label for="artist">Előadó:</label>
+                    <label for="artist">Artist:</label>
                     <input type="text" id="artist" name="artist" required><br><br>
 
                     <label for="album">Album:</label>
                     <input type="text" id="album" name="album"><br><br>
 
-                    <label for="genre">Műfaj:</label>
+                    <label for="genre">Genre:</label>
                     <input type="text" id="genre" name="genre"><br><br>
 
-                    <label for="musicFile">Zenefájl:</label>
+                    <label for="musicFile">Music file:</label>
                     <input type="file" id="musicFile" name="musicFile" required><br><br>
 
-                    <label for="musicPhoto">Borítókép:</label>
+                    <label for="musicPhoto">Cover image:</label>
                     <input type="file" id="musicPhoto" name="musicPhoto"><br><br>
 
-                    <button type="submit" name="submit">Feltöltés</button>
+                    <button type="submit" name="submit">Upload</button>
                 </form>
             </div>
 

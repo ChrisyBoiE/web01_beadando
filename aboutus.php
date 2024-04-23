@@ -13,8 +13,6 @@ if ($is_logged_in) {
     $avatar_image = 'default.png'; // Egy alapértelmezett kép, ha nincs bejelentkezve a felhasználó
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="hu">
 

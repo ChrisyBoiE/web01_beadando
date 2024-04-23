@@ -6,21 +6,19 @@ html {
     height: 100%;
     width: 100%;
     margin: 0 auto;
-    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items:center;
+    flex-direction: column;
     font-family: "Poppins", sans-serif;
     font-weight: 300;
     font-style: normal;
     background: radial-gradient(circle, #f5ebe0, #d1c0ac);
 }
-
-#music-player {
+#music-player{
     display: flex;
     height: 95%;
     width: 95%;
-    margin: 0 auto;
     border-radius: 10px;
 }
 
@@ -450,59 +448,72 @@ section#recently-played {
 /* Reszponzív design és további stílusok */
 
 
-.music-player-controls {
+/* .music-player-controls {
     display: flex;
     align-items: center;
     background-color: #ccc;
     padding: 10px;
+    margin-top: 50px;
     border-radius: 25px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 12px 15px rgba(68, 68, 68, 0.1);
     width: auto;
     max-width: 800px;
-    /* or 100% based on your layout */
-    margin: auto;
-}
+} */
 
-/* Stílusok a zenelejátszó vezérlőihez */
-.music-player-controls {
+
+
+.containerbox{
+    width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgba(35, 35, 35, 0.70);
+    justify-content: center;
+    align-items: start;
+    flex-direction: row;
+    margin: 0 auto;
+
+}
+.music-player-controls {
+    background-color: rgba(35, 35, 35, 0.50);
     padding: 20px;
     border-radius: 25px;
     color: white;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin: 0 auto;
+    width: 80%;
+    height: 450px;
 }
-
-.current-track {
+.track-artwork{
     display: flex;
-    align-items: center;
+    justify-content: center;
+    align-items: start;
 }
-
 .track-artwork img {
-    width: 40px;
-    height: 40px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
     object-fit: cover;
     margin-right: 10px;
 }
 
 .track-info {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
+    height: 50px;
 }
 
 .track-title {
-    font-size: 16px;
+    font-size: 1em;
     font-weight: bold;
 }
 
 .track-artist {
-    font-size: 14px;
+    font-size: 1em;
 }
-
+.playback-controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .playback-controls button {
     background: none;
     border: none;
@@ -639,4 +650,93 @@ input[type="file"] {
 
 .teszt button:hover {
     background-color: #5058cc;
+}
+
+@media (min-width: 2880px) {
+    .music-player-controls {
+        background-color: rgba(35, 35, 35, 0.50);
+        padding: 50px;
+        border-radius: 25px;
+        color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        height: auto;
+    }
+    .track-artwork{
+        display: flex;
+        justify-content: center;
+        align-items: start;
+    }
+    .track-artwork img {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 30px;
+    }
+    
+    .track-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 80px;
+        margin-bottom: 50px;
+    }
+    
+    .track-title {
+        font-size: 1em;
+        font-weight: bold;
+    }
+}
+@media (min-width: 7670px) {
+    .music-player-controls {
+        background-color: rgba(35, 35, 35, 0.50);
+        padding: 50px;
+        border-radius: 25px;
+        color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        height: auto;
+    }
+    .track-artwork{
+        display: flex;
+        justify-content: center;
+        align-items: start;
+    }
+    .track-artwork img {
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 30px;
+    }
+    
+    .track-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 80px;
+        margin-bottom: 50px;
+    }
+    
+    .track-title {
+        font-size: 4em;
+        font-weight: bold;
+    }
+}
+@media (min-width: 5700px) {
+    #sidebar{
+        width: 400px;
+    }
+    #sidebar li{
+        font-size: 2em;
+    }
+    .sidebar-section h2{
+        font-size: 2em;
+    }
+    .user-profile span{
+        font-size: 2.5em;
+    }
 }

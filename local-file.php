@@ -26,6 +26,15 @@ try {
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
 }
+
+try {
+    $stmt2 = $db->prepare("SELECT COUNT(*) as count FROM Songs WHERE user_id = ?");
+    $stmt2->execute([$_SESSION['id']]);
+    $result = $stmt2->fetch(PDO::FETCH_ASSOC);
+    $songs_count = $result['count'];
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -79,24 +88,8 @@ try {
 
 
 
-        <main id="content">
-            <header id="top-bar">
-                <!-- <div class="search-container">
-                    <input type="search" placeholder="Keresés..." id="search-box">
-                    <button type="submit" id="search-btn">Keresés</button>
-                </div> -->
-                <div class="user-controls">
-                    <div class="user-profile">
-                        <?php if ($is_logged_in): ?>
-                            <img src="img/<?php echo $avatar_image; ?>" alt="Profilkép" class="profile-pic">
-                            <span class="username"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>
-                        <?php else: ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </header>
-
-
+        <main id="content" style="padding: 15px 15px">
+            <h2>My uploads <?php echo '('.$songs_count.')' ?></h2>
             <header id="top-bar2">
                 <div id="song-list">
                     <?php foreach ($songs as $song): ?>
